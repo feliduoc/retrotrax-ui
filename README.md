@@ -82,6 +82,6 @@ Si `jpackage` no se reconoce, agrega la carpeta `bin` de tu JDK al PATH.
 - **macOS:** consulta Spotify y Music con AppleScript cada 2 segundos.
 - **Linux:** todavía no está soportado.
 
-## Licencia
+## terceros
 
-Código bajo licencia [MIT](LICENSE). Componentes de terceros en [THIRD_PARTY.md](THIRD_PARTY.md).
+Componentes de terceros en [THIRD_PARTY.md](THIRD_PARTY.md).
