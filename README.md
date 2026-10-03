@@ -1,7 +1,8 @@
 # Retro Trax
 <img width="866" height="236" alt="retrotrax" src="https://github.com/user-attachments/assets/94d34904-caae-4a0f-ad87-8eee3718439b" />
 
-
+#¿que es retrotrax?
+es un proyecto universitario personal :D
 Un popup animado que muestra la canción que estás escuchando (título, artista y álbum),
 inspirado en las notificaciones de música de los juegos de carreras de principios de los 2000.
 Hecho con JavaFX.
