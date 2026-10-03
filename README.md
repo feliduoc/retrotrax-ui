@@ -7,6 +7,7 @@ inspirado en las notificaciones de música de los juegos de carreras de principi
 Hecho con JavaFX.
 
 > Proyecto de aficionados, sin relación con Electronic Arts. Ver [THIRD_PARTY.md](THIRD_PARTY.md).
+> se uso la ayuda de la IA para la creacion de esta app.
 
 ## Qué hace
 
