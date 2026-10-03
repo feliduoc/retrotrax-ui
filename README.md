@@ -22,6 +22,17 @@ Hecho con JavaFX.
   - iniciar con Windows.
 - En Windows queda en la bandeja del sistema, junto al reloj.
 
+
+# demostracion visual de retrotrax
+
+- menu de ajustes
+  <img width="767" height="890" alt="image" src="https://github.com/user-attachments/assets/20ce4618-d718-4005-acbe-f75f461a8928" />
+
+
+- en apple music
+<img width="300" height="83" alt="image" src="https://github.com/user-attachments/assets/82492bbf-5f40-4c5f-b631-3079e39809a8" />
+
+
 ## Descargar y usar (Windows)
 
 1. Entra a la sección **Releases** y descarga `RetroTrax-X.X-windows.zip`.
