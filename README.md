@@ -26,11 +26,15 @@ Hecho con JavaFX.
 # demostracion visual de retrotrax
 
 - menu de ajustes
-  <img width="767" height="890" alt="image" src="https://github.com/user-attachments/assets/20ce4618-d718-4005-acbe-f75f461a8928" />
+<img width="771" height="767" alt="image" src="https://github.com/user-attachments/assets/b6beadce-e892-4a79-b760-f83d9da88c34" />
+<img width="768" height="302" alt="image" src="https://github.com/user-attachments/assets/793f7fe7-693a-43de-8908-7c952219cbe2" />
+
+- el texto es personalizable, se uso el nombre de EA con fine demostrativos
 
 
 - en apple music
-<img width="300" height="83" alt="image" src="https://github.com/user-attachments/assets/82492bbf-5f40-4c5f-b631-3079e39809a8" />
+<img width="546" height="182" alt="Grabación 2026-10-03 131951" src="https://github.com/user-attachments/assets/1029fd22-5624-4b83-94d3-d015c3436fc4" />
+
 
 
 ## Descargar y usar (Windows)
