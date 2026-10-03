@@ -1,0 +1,174 @@
+/* Ajustes con la estética de Need for Speed: Most Wanted.
+   Los colores van literales (no "looked-up") porque los popups de los combos no los heredan. */
+
+.mw-root {
+    -fx-background-color: #040404;
+    -fx-font-family: 'Michroma';
+    -fx-font-size: 11px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.mw-panel {
+    -fx-background-color: #0a0a0a;
+    -fx-border-color: #2b2b2b;
+    -fx-border-width: 1;
+}
+
+/* Cabecera con rayas diagonales suaves */
+.mw-header {
+    -fx-padding: 12 14 12 16;
+    -fx-background-color: linear-gradient(from 0px 0px to 7px 7px, repeat,
+        #0d0d0d 0%, #0d0d0d 50%, #1c1c1c 50%, #1c1c1c 100%);
+}
+
+/* Franjas con rayas más marcadas */
+.mw-band {
+    -fx-background-color: linear-gradient(from 0px 0px to 8px 8px, repeat,
+        #060606 0%, #060606 50%, #2e2e2e 50%, #2e2e2e 100%);
+}
+
+.mw-title { -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold; -fx-font-style: italic; }
+.mw-bang  { -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: -3 0 0 0; }
+.mw-note  { -fx-text-fill: #e0a030; -fx-font-size: 16px; }
+
+.mw-label { -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; }
+.mw-value { -fx-text-fill: #e0a030; -fx-font-size: 11px; -fx-font-weight: bold; }
+.mw-hint  { -fx-text-fill: #8f7c4c; -fx-font-size: 9px; }
+.mw-status { -fx-text-fill: #e0a030; -fx-font-size: 10px; -fx-min-height: 12; }
+
+/* Campos de texto */
+.mw-root .text-field {
+    -fx-background-color: #181818;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #4d4531;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #777777;
+    -fx-highlight-fill: #e0a030;
+    -fx-highlight-text-fill: black;
+    -fx-padding: 6 8 6 8;
+}
+.mw-root .text-field:focused { -fx-border-color: #e0a030; }
+
+/* Combo (fuente) */
+.mw-root .combo-box-base {
+    -fx-background-color: #181818;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #4d4531;
+    -fx-border-radius: 0;
+}
+.mw-root .combo-box-base:focused { -fx-border-color: #e0a030; }
+.mw-root .combo-box .list-cell { -fx-text-fill: white; -fx-background-color: transparent; -fx-padding: 6 8 6 8; }
+.mw-root .combo-box .arrow-button { -fx-background-color: transparent; -fx-background-insets: 0; }
+.mw-root .combo-box .arrow { -fx-background-color: #e0a030; }
+.combo-box-popup > .list-view {
+    -fx-background-color: #111111;
+    -fx-border-color: #e0a030;
+    -fx-border-width: 1;
+}
+.combo-box-popup .list-cell { -fx-background-color: #111111; -fx-text-fill: white; -fx-font-size: 11px; }
+.combo-box-popup .list-cell:filled:hover,
+.combo-box-popup .list-cell:filled:selected { -fx-background-color: #e0a030; -fx-text-fill: black; }
+
+/* Sliders */
+.mw-root .slider .track {
+    -fx-background-color: #3a3322;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 2;
+}
+.mw-root .slider .thumb {
+    -fx-background-color: #e0a030;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 8 4 8 4;
+}
+
+/* Casillas */
+.mw-root .check-box { -fx-text-fill: white; -fx-font-size: 10px; -fx-font-weight: bold; }
+.mw-root .check-box .box {
+    -fx-background-color: #181818;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #e0a030;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 0;
+}
+.mw-root .check-box:selected .mark { -fx-background-color: #e0a030; }
+
+/* Muestras de color */
+.mw-swatch { -fx-border-color: #555555; -fx-border-width: 1; -fx-cursor: hand; }
+.mw-swatch:hover { -fx-border-color: white; }
+
+/* Botones pequeños (Elegir imagen…, Quitar) */
+.mw-mini {
+    -fx-background-color: #181818;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #4d4531;
+    -fx-border-radius: 0;
+    -fx-text-fill: #e0a030;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+}
+.mw-mini:hover { -fx-border-color: #e0a030; }
+.mw-mini:pressed { -fx-background-color: #2a2412; }
+
+/* Posición */
+.mw-corner {
+    -fx-background-color: #181818;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #4d4531;
+    -fx-border-radius: 0;
+    -fx-text-fill: #e0a030;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 7 10 7 10;
+    -fx-cursor: hand;
+}
+.mw-corner:hover { -fx-border-color: #e0a030; }
+.mw-corner:selected { -fx-background-color: #e0a030; -fx-border-color: #e0a030; -fx-text-fill: #111111; }
+
+/* Botón grande tipo "OK" del juego */
+.mw-ok {
+    -fx-background-color: #4b4a42;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-text-fill: #e0a030;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-width: 130;
+    -fx-pref-height: 32;
+    -fx-cursor: hand;
+}
+.mw-ok:hover { -fx-background-color: #5d5c52; }
+.mw-ok:pressed { -fx-background-color: #3a3932; }
+
+/* Minimizar / cerrar */
+.mw-win {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-text-fill: #bbbbbb;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 7 2 7;
+    -fx-cursor: hand;
+}
+.mw-win:hover { -fx-text-fill: #e0a030; }
+
+/* Scroll */
+.mw-scroll, .mw-scroll > .viewport { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.mw-scroll .scroll-bar:vertical { -fx-pref-width: 8; -fx-background-color: transparent; }
+.mw-scroll .scroll-bar .thumb { -fx-background-color: #e0a030; -fx-background-radius: 0; -fx-background-insets: 0; }
+.mw-scroll .scroll-bar .track { -fx-background-color: #1a1a1a; -fx-background-radius: 0; }
+.mw-scroll .scroll-bar .increment-button,
+.mw-scroll .scroll-bar .decrement-button { -fx-padding: 0; -fx-pref-height: 0; -fx-background-color: transparent; }
+.mw-scroll .scroll-bar .increment-arrow,
+.mw-scroll .scroll-bar .decrement-arrow { -fx-padding: 0; -fx-shape: " "; }
