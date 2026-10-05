@@ -1,60 +1,59 @@
-/* -trax-accent se define desde Java con el color que elija el usuario */
-.trax-overlay {
-    -fx-background-color: transparent;
-}
+/* Colores medidos de una grabación del original. -trax-accent (el dorado) lo define Java con el color elegido. */
+.trax-overlay { -fx-background-color: transparent; }
 
-/* Barra negra con borde dorado */
+/* Marco dorado de la barra (el recorte redondea el extremo derecho) */
 .trax-bar {
-    -fx-background-color: linear-gradient(to bottom, #333333 0%, #070707 45%, #1a120a 100%);
-    -fx-background-radius: 30;
-    -fx-border-color: -trax-accent;
-    -fx-border-width: 2.5;
-    -fx-border-radius: 30;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 10, 0.2, 0, 3);
+    -fx-background-color: linear-gradient(to bottom,
+        derive(-trax-accent, 14%) 0%, -trax-accent 45%, derive(-trax-accent, -10%) 100%);
+    -fx-background-radius: 0; /* las esquinas redondas las da el recorte (solo a la derecha) */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.65), 9, 0.15, 0, 3);
 }
 
-/* Disco con rayas diagonales y aro dorado */
+/* Relleno: negro arriba, café oscuro abajo */
+.trax-fill {
+    -fx-background-color: linear-gradient(to bottom,
+        #000000 0%, #040203 45%, #151004 62%, #2c1e0c 82%, #3a2a08 100%);
+}
+
+/* Disco: aro con brillo arriba, línea oscura interior y rayas "/" muy sutiles */
 .trax-logo {
-    -fx-background-color: linear-gradient(from 0px 0px to 8px 8px, repeat,
-        #0a0a0a 0%, #0a0a0a 50%, #353535 50%, #353535 100%);
-    -fx-background-radius: 40;
-    -fx-border-color: -trax-accent;
-    -fx-border-width: 3.5;
-    -fx-border-radius: 40;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 8, 0.3, 0, 2);
+    -fx-background-color:
+        linear-gradient(to bottom, derive(-trax-accent, 62%) 0%, -trax-accent 38%, derive(-trax-accent, -16%) 100%),
+        #2a0d00,
+        linear-gradient(from 0px 0px to 6px 6px, repeat,
+            #060200 0%, #060200 50%, #1d140b 50%, #1d140b 100%);
+    -fx-background-insets: 0, 4, 5;
+    -fx-background-radius: 100, 100, 100;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 8, 0.25, 0, 2);
+}
+
+/* Rayas brillantes del destello de entrada */
+.trax-hatch {
+    -fx-background-color: linear-gradient(from 0px 0px to 6px 6px, repeat,
+        #000000 0%, #000000 50%, derive(-trax-accent, -32%) 50%, derive(-trax-accent, -32%) 100%);
+    -fx-background-radius: 100;
 }
 
 .trax-logo-text {
-    -fx-text-fill: linear-gradient(to bottom, #ffffff, #9b9b9b);
+    -fx-text-fill: linear-gradient(to bottom, #ffffff, #a9a9a9);
     -fx-font-weight: bold;
     -fx-font-style: italic;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 3, 0.5, 0, 1);
 }
 
-.trax-title {
-    -fx-text-fill: #f5f5f5;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-}
+.trax-title { -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 14px; }
+.trax-sub   { -fx-text-fill: #c3bfa4; -fx-font-weight: bold; -fx-font-size: 12px; }
 
-.trax-sub {
-    -fx-text-fill: derive(-trax-accent, 30%);
-    -fx-font-size: 10px;
-}
-
-/* Lateral dorado con el texto girado */
+/* Etiqueta lateral: dorado plano con el texto negro girado */
 .trax-side {
-    -fx-background-color: linear-gradient(to right,
-        derive(-trax-accent, -35%), -trax-accent 45%, derive(-trax-accent, -35%));
-    -fx-border-color: rgba(0,0,0,0.55);
+    -fx-background-color: -trax-accent;
+    -fx-border-color: transparent transparent transparent rgba(8,3,2,0.9);
     -fx-border-width: 0 0 0 1.5;
 }
+.trax-tag { -fx-text-fill: #050000; -fx-font-weight: bold; }
 
-.trax-tag {
-    -fx-text-fill: #1a1004;
-    -fx-font-weight: bold;
+/* Arco fino que gira alrededor del círculo */
+.trax-arc {
+    -fx-fill: transparent;
+    -fx-stroke: derive(-trax-accent, 62%);
+    -fx-effect: dropshadow(gaussian, rgba(255,214,120,0.7), 4, 0.3, 0, 0);
 }
-
-/* Aros que rodean el círculo */
-.trax-ring-a { -fx-stroke: -trax-accent; }
-.trax-ring-b { -fx-stroke: white; }

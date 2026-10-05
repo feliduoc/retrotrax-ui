@@ -49,7 +49,7 @@ final class UiUtil {
     }
 
     static Color color(String hex) {
-        try { return Color.web(hex); } catch (Exception e) { return Color.web("#c9a227"); }
+        try { return Color.web(hex); } catch (Exception e) { return Color.web("#c4943c"); }
     }
 
     static String toHex(Color c) {

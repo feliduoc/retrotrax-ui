@@ -31,11 +31,11 @@ import java.io.File;
 import java.util.EnumMap;
 import java.util.Map;
 
-/** Ventana de ajustes con la estética de los menús de Need for Speed: Most Wanted. */
+/** Ventana de ajustes con la estética de los menús Most Wanted. */
 public class SettingsWindow {
 
     private static final String GOLD = "#e0a030";
-    private static final String[] PRESETS = {"#c9a227", "#ff8a00", "#e23a2e", "#2ec4ff", "#4cd964", "#ffffff"};
+    private static final String[] PRESETS = {"#c4943c", "#ff8a00", "#e23a2e", "#2ec4ff", "#4cd964", "#ffffff"};
 
     private final Stage stage = new Stage(StageStyle.UNDECORATED);
     private boolean hideOnClose = false;
@@ -418,7 +418,7 @@ public class SettingsWindow {
         s.fontFile = fontFile;
         s.logoImage = logoImage;
         s.accentColor = UiUtil.toHex(UiUtil.color(hex.getText().trim()));
-        s.holdSeconds = Math.round(hold.getValue() * 2) / 2.0;
+        s.holdSeconds = Math.round(hold.getValue() * 10) / 10.0;
         s.scale = Math.round(scale.getValue() * 20) / 20.0;
         if (cornerGroup.getSelectedToggle() != null) {
             s.corner = (TraxSettings.Corner) cornerGroup.getSelectedToggle().getUserData();
@@ -437,7 +437,7 @@ public class SettingsWindow {
 
     private void refreshColor() {
         String text = hex.getText() == null ? "" : hex.getText().trim();
-        String shown = UiUtil.toHex(UiUtil.color(text.isEmpty() ? "#c9a227" : text));
+        String shown = UiUtil.toHex(UiUtil.color(text.isEmpty() ? "#c4943c" : text));
         preview.setStyle("-fx-background-color: " + shown + "; -fx-border-color: white; -fx-border-width: 1.5;");
     }
 

@@ -1,4 +1,5 @@
 # Emite en JSON la cancion que suena, cada 2 segundos
+# script creado con la ayuda de IA (claude)
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 

@@ -26,7 +26,7 @@ public final class TrayIconManager {
             BufferedImage img = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = img.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setColor(new java.awt.Color(0xc9a227));
+            g.setColor(new java.awt.Color(0xc4943c));
             g.fillOval(0, 0, 15, 15);
             g.setColor(java.awt.Color.BLACK);
             g.fillOval(4, 4, 7, 7);
