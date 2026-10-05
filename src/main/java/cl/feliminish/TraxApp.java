@@ -1,6 +1,7 @@
 package cl.feliminish;
 
 import cl.feliminish.service.NowPlayingService;
+import cl.feliminish.service.SingleInstance;
 import cl.feliminish.service.StartupManager;
 import cl.feliminish.settings.SettingsStore;
 import cl.feliminish.ui.SettingsWindow;
@@ -35,6 +36,8 @@ public class TraxApp extends Application {
         SettingsStore.load();
 
         SettingsWindow settings = new SettingsWindow(this::quit);
+        // Si el usuario abre el programa otra vez, esta instancia muestra sus ajustes en vez de abrirse una segunda
+        SingleInstance.setShowHandler(() -> Platform.runLater(settings::show));
         boolean tray = TrayIconManager.install(settings::show, this::quit);
         settings.setHideOnClose(tray);
         // Desde el inicio de Windows arranca en silencio (solo si hay bandeja para volver a abrir los ajustes)
@@ -48,6 +51,7 @@ public class TraxApp extends Application {
     private void quit() {
         if (service != null) service.stop();
         TrayIconManager.remove();
+        SingleInstance.release();
         Platform.exit();
         System.exit(0);
     }

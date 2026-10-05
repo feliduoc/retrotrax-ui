@@ -30,7 +30,7 @@ public final class StartupManager {
         return cmd;
     }
 
-    /** true si estamos en Windows y corriendo desde el ejecutable (no desde el IDE ). */
+    /** true si estamos en Windows y corriendo desde el ejecutable (no desde IntelliJ). */
     public static boolean isSupported() {
         return isWindows() && exePath() != null;
     }

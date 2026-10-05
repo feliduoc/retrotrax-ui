@@ -1,6 +1,6 @@
 package cl.feliminish.settings;
 
-/** Todo lo que el usuario puede personalizar. Se guardara como JSON en ~/.retrotrax/settings.json */
+/** Todo lo que el usuario puede personalizar. Se guarda como JSON en ~/.retrotrax/settings.json */
 public class TraxSettings {
 
     public enum Corner {

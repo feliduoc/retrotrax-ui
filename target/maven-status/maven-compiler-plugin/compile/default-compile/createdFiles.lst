@@ -2,6 +2,7 @@ cl\feliminish\ui\TrayIconManager.class
 cl\feliminish\TraxApp.class
 cl\feliminish\ui\TraxNotification.class
 cl\feliminish\Main.class
+cl\feliminish\service\SingleInstance.class
 cl\feliminish\service\TrackInfo.class
 cl\feliminish\service\WindowsMediaSource.class
 cl\feliminish\settings\TraxSettings.class

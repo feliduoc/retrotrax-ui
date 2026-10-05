@@ -11,7 +11,7 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
 
-/** Icono en la bandeja de Windows (junto al reloj). En macOS no se usa: AWT y JavaFX se llevan mal ahí. */
+/** Icono en la bandeja de Windows (junto al reloj). En macOS no se usa: AWT y JavaFX se llevan mal ahí XDD. */
 public final class TrayIconManager {
 
     private static TrayIcon icon;

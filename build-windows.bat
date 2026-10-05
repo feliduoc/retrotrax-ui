@@ -1,7 +1,7 @@
 @echo off
 rem Genera dist\RetroTrax\RetroTrax.exe (carpeta portable, no necesita Java instalado)
 rem Requisitos: JDK 21 completo (con jpackage). Maven en el PATH es opcional:
-rem si no esta, usa el jar que generes desde IntelliJ o IDE que uses (panel Maven, Lifecycle, package).
+rem si no esta, usa el jar que generes desde IntelliJ (panel Maven, Lifecycle, package).
 rem Ejecutar desde la carpeta del proyecto.
 
 where mvn >nul 2>nul
