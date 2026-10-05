@@ -1,5 +1,6 @@
 # Retro Trax
-<img width="866" height="236" alt="retrotrax" src="https://github.com/user-attachments/assets/94d34904-caae-4a0f-ad87-8eee3718439b" />
+<img width="396" height="333" alt="new retrotrax icon " src="https://github.com/user-attachments/assets/c4426dab-ddbe-41b5-a05f-b128fd541272" />
+
 
 # ¿que es retrotrax?
 es un proyecto universitario personal :D
@@ -31,11 +32,15 @@ Hecho con JavaFX.
 <img width="773" height="390" alt="image" src="https://github.com/user-attachments/assets/fe516f5c-05ac-4793-a2dd-a0a5ac0d960a" />
 
 
-- el texto es personalizable, se uso el nombre de EA es con fines demostrativos
+> el texto es personalizable, se uso el nombre de EA es con fines demostrativos
 
 
-- en apple music
-<img width="384" height="126" alt="retrotrax demostracion" src="https://github.com/user-attachments/assets/edab7cc5-22a9-468d-89f2-dd2c980e6f53" />
+# reproductores general
+- en apple music y reproductores general
+  <img width="412" height="114" alt="demo" src="https://github.com/user-attachments/assets/2b3be49e-a8fb-40cc-8593-cec4c730acff" />
+
+  
+
 
 
 
