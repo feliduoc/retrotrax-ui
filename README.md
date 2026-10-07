@@ -1,8 +1,10 @@
 # Retro Trax
-<img width="396" height="333" alt="new retrotrax icon " src="https://github.com/user-attachments/assets/c4426dab-ddbe-41b5-a05f-b128fd541272" />
+<p align="center">
+  <img width="396" height="333" alt="new retrotrax icon " src="https://github.com/user-attachments/assets/c4426dab-ddbe-41b5-a05f-b128fd541272" />
+</p>
 
 
-# ¿que es retrotrax?
+# ¿Qué es Retrotrax?
 es un proyecto universitario personal :D
 Un popup animado que muestra la canción que estás escuchando (título, artista y álbum),
 inspirado en las notificaciones de música de los juegos de carreras de principios de los 2000.
@@ -26,19 +28,20 @@ Hecho con JavaFX.
 
 # demostracion visual de retrotrax
 
-- menu de ajustes
+- Menu de ajustes
   
 <img width="771" height="767" alt="image" src="https://github.com/user-attachments/assets/b6beadce-e892-4a79-b760-f83d9da88c34" />
 <img width="773" height="390" alt="image" src="https://github.com/user-attachments/assets/fe516f5c-05ac-4793-a2dd-a0a5ac0d960a" />
 
 
-> el texto es personalizable, se uso el nombre de EA es con fines demostrativos
+> El texto es personalizable, se uso el nombre de EA es con fines demostrativos
 
 
-# reproductores general
-- en apple music y reproductores general
+# Reproductores general
+- En apple music y reproductores general
+<p align="center">
   <img width="412" height="114" alt="demo" src="https://github.com/user-attachments/assets/2b3be49e-a8fb-40cc-8593-cec4c730acff" />
-
+</p>
   
 
 
