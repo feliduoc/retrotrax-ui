@@ -1,7 +1,5 @@
 package cl.feliminish.model;
 
-// orden e info que leera retrotax de las canciones obtenidas
-
 public class Song {
     private final String title;
     private final String artist;

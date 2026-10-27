@@ -21,12 +21,13 @@ public class NowPlayingService {
         String os = System.getProperty("os.name", "").toLowerCase();
         if (os.contains("win")) return new WindowsMediaSource();
         if (os.contains("mac")) return new MacMediaSource();
+        if (os.contains("linux") || os.contains("nux")) return new LinuxMediaSource();
         return null;
     }
 
     public void start() {
         if (source == null) {
-            System.err.println("Sistema operativo no soportado todavía (solo Windows y macOS).");
+            System.err.println("Sistema operativo no soportado (solo Windows, macOS y Linux).");
             return;
         }
         source.start(this::process);

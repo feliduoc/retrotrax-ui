@@ -31,9 +31,16 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
- * parametros general del pop up de retrotax viene enlazado a trax css
+ * Popup de música. Proporciones y tiempos medidos cuadro a cuadro de una grabación del original
+ * (30 fps), tomando el diámetro del disco como unidad (D = 72 px aquí).
+ *
+ * Entrada (0.90 s): un arco fino crece alrededor → el disco aparece con su aro → el logo llega grande y
+ *   se asienta → destello de rayas → la barra aparece de golpe → el texto aparece de golpe.
+ * Arco: nace al entrar, gira sin parar sobre el aro mientras el popup está completo y se despide al final;
+ * salida: se apaga el texto, la barra se recoge, el disco se desvanece y el arco sigue solo hasta apagarse.
  */
 public class TraxNotification {
 
@@ -75,6 +82,7 @@ public class TraxNotification {
 
         StackPane disco = new StackPane(hatch, logo);
         disco.getStyleClass().add("trax-logo");
+        disco.setStyle(discStyle(cfg));                // interior: rayas o cristal, con el color y la opacidad del usuario
         fixSize(disco, D, D);
         disco.setOpacity(0);
 
@@ -97,10 +105,10 @@ public class TraxNotification {
         VBox info = new VBox(1);
         Label title = new Label(song.getTitle());
         title.getStyleClass().add("trax-title");
-        title.setStyle(fontStyle(cfg.italicBar));
+        title.setStyle(fontStyle(cfg.italicBar) + textFx(cfg));
         info.getChildren().add(title);
-        if (notBlank(song.getArtist())) info.getChildren().add(sub(song.getArtist(), cfg.italicBar));
-        if (notBlank(song.getAlbum()))  info.getChildren().add(sub(song.getAlbum(), cfg.italicBar));
+        if (notBlank(song.getArtist())) info.getChildren().add(sub(song.getArtist(), cfg.italicBar, textFx(cfg)));
+        if (notBlank(song.getAlbum()))  info.getChildren().add(sub(song.getAlbum(), cfg.italicBar, textFx(cfg)));
         info.setOpacity(0);
 
         // ── Etiqueta lateral con el texto girado 90° ──
@@ -118,6 +126,7 @@ public class TraxNotification {
         // ── Barra: marco dorado + relleno negro→café + etiqueta ──
         Region fill = new Region();
         fill.getStyleClass().add("trax-fill");
+        fill.setStyle(fillStyle(cfg));                // degradado clásico o cristal Aero, con color y opacidad del usuario
         fill.setManaged(false);                       // su tamaño lo manejamos nosotros
         fill.relocate(0, BORDER);
 
@@ -300,19 +309,120 @@ public class TraxNotification {
         l.getStyleClass().add("trax-logo-text");
         int n = text.length();
         l.setStyle("-fx-font-size: " + (n <= 2 ? 28 : n == 3 ? 22 : n == 4 ? 17 : 13) + "px; "
-                + fontStyle(cfg.italicBadge));
+                + fontStyle(cfg.italicBadge) + discFx(cfg));
         return l;
     }
 
-    private static Label sub(String text, boolean italic) {
+    private static Label sub(String text, boolean italic, String extra) {
         Label l = new Label(text);
         l.getStyleClass().add("trax-sub");
-        l.setStyle(fontStyle(italic));
+        l.setStyle(fontStyle(italic) + extra);
         return l;
     }
 
     private static String fontStyle(boolean italic) {
         return "-fx-font-style: " + (italic ? "italic" : "normal") + ";";
+    }
+
+
+    // ───────────────────────── fondo de la barra ─────────────────────────
+
+    private static boolean isAero(TraxSettings cfg) {
+        return "AERO".equalsIgnoreCase(cfg.barStyle);
+    }
+
+    private static double opacity(TraxSettings cfg) {
+        return Math.max(0.05, Math.min(1.0, cfg.barOpacity));
+    }
+
+    private static String rgba(Color c, double alpha) {
+        return String.format(Locale.ROOT, "rgba(%d,%d,%d,%.3f)",
+                Math.round(c.getRed() * 255), Math.round(c.getGreen() * 255), Math.round(c.getBlue() * 255),
+                Math.max(0, Math.min(1, alpha)));
+    }
+
+    private static String white(double alpha) {
+        return String.format(Locale.ROOT, "rgba(255,255,255,%.3f)", Math.max(0, Math.min(1, alpha)));
+    }
+
+    /** Sombra suave bajo el texto cuando el fondo deja ver lo que hay detrás (si no, se pierde al leer). */
+    private static String textFx(TraxSettings cfg) {
+        if (!isAero(cfg) && opacity(cfg) >= 0.95) return "";
+        return " -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.85), 3, 0.55, 0, 1);";
+    }
+
+    /**
+     * CLÁSICO: el degradado del original (negro arriba → el color elegido abajo), con la opacidad elegida.
+     * AERO: cristal estilo Windows 7: tinte translúcido, brillo en la mitad de arriba, un destello en
+     * diagonal y un filo de luz arriba. (Imita el aspecto; no desenfoca lo que hay detrás de la ventana.)
+     */
+    private static String fillStyle(TraxSettings cfg) {
+        Color base = UiUtil.colorOr(cfg.barColor, "#3a2a08");
+        double a = opacity(cfg);
+
+        if (isAero(cfg)) {
+            return "-fx-background-color: "
+                    + "linear-gradient(to bottom, " + rgba(base, 0.62 * a) + " 0%, " + rgba(base, 0.36 * a) + " 100%), "
+                    + "linear-gradient(to bottom, " + white(0.42 * a) + " 0%, " + white(0.14 * a) + " 48%, "
+                    + white(0) + " 50%, " + white(0) + " 100%), "
+                    + "linear-gradient(from 0% 0% to 100% 100%, " + white(0) + " 0%, " + white(0) + " 56%, "
+                    + white(0.18 * a) + " 57%, " + white(0.04 * a) + " 74%, " + white(0) + " 75%, " + white(0) + " 100%);"
+                    + " -fx-border-color: " + white(0.6 * a) + " transparent " + rgba(Color.BLACK, 0.3 * a) + " transparent;"
+                    + " -fx-border-width: 1 0 1 0;";
+        }
+
+        // Posiciones y proporciones medidas del original (#000 → #040203 → #151004 → #2c1e0c → #3a2a08)
+        double[] pos = {0, 45, 62, 82, 100};
+        double[] mix = {0, 0.07, 0.36, 0.76, 1.0};
+        StringBuilder g = new StringBuilder("linear-gradient(to bottom");
+        for (int i = 0; i < pos.length; i++) {
+            Color c = Color.BLACK.interpolate(base, mix[i]);
+            g.append(", ").append(rgba(c, a)).append(' ').append((int) pos[i]).append('%');
+        }
+        g.append(')');
+        return "-fx-background-color: " + g + ";";
+    }
+
+    // ───────────────────────── fondo del círculo ─────────────────────────
+
+    private static boolean isDiscAero(TraxSettings cfg) {
+        return "AERO".equalsIgnoreCase(cfg.discStyle);
+    }
+
+    private static double discOpacity(TraxSettings cfg) {
+        return Math.max(0.05, Math.min(1.0, cfg.discOpacity));
+    }
+
+    /** Sombra bajo el texto del círculo cuando su fondo deja ver lo de atrás. */
+    private static String discFx(TraxSettings cfg) {
+        if (!isDiscAero(cfg) && discOpacity(cfg) >= 0.95) return "";
+        return " -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.85), 3, 0.55, 0, 1);";
+    }
+
+    /**
+     * Interior del círculo (el aro dorado lo pone el CSS).
+     * CLÁSICO: rayas diagonales de dos tonos (el segundo, un poco más claro y cálido). AERO: cristal como el de la barra.
+     * Los insets y radios van en línea porque dependen de cuántas capas se pintan.
+     */
+    private static String discStyle(TraxSettings cfg) {
+        Color base = UiUtil.colorOr(cfg.discColor, "#060200");
+        double a = discOpacity(cfg);
+
+        if (isDiscAero(cfg)) {
+            return "-fx-background-color: "
+                    + "linear-gradient(to bottom, " + rgba(base, 0.62 * a) + " 0%, " + rgba(base, 0.36 * a) + " 100%), "
+                    + "linear-gradient(to bottom, " + white(0.42 * a) + " 0%, " + white(0.14 * a) + " 48%, "
+                    + white(0) + " 50%, " + white(0) + " 100%), "
+                    + "linear-gradient(from 0% 0% to 100% 100%, " + white(0) + " 0%, " + white(0) + " 56%, "
+                    + white(0.18 * a) + " 57%, " + white(0.04 * a) + " 74%, " + white(0) + " 75%, " + white(0) + " 100%);"
+                    + " -fx-background-insets: 5, 5, 5; -fx-background-radius: 31, 31, 31;";
+        }
+
+        Color light = base.interpolate(UiUtil.color(cfg.accentColor), 0.10);
+        return "-fx-background-color: linear-gradient(from 0px 0px to 6px 6px, repeat, "
+                + rgba(base, a) + " 0%, " + rgba(base, a) + " 50%, "
+                + rgba(light, a) + " 50%, " + rgba(light, a) + " 100%);"
+                + " -fx-background-insets: 5; -fx-background-radius: 31;";
     }
 
     private static void place(Stage stage, TraxSettings.Corner corner, double w, double h) {

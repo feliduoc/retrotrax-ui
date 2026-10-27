@@ -1,5 +1,6 @@
 package cl.feliminish.ui;
 
+import cl.feliminish.i18n.I18n;
 import cl.feliminish.model.Song;
 import cl.feliminish.service.StartupManager;
 import cl.feliminish.settings.SettingsStore;
@@ -13,6 +14,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
@@ -28,17 +30,30 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-/** Ventana de ajustes con la estética de los menús Most Wanted. */
+/** Ventana de ajustes con la estética de los menús de Need for Speed: Most Wanted. */
 public class SettingsWindow {
 
     private static final String GOLD = "#e0a030";
     private static final String[] PRESETS = {"#c4943c", "#ff8a00", "#e23a2e", "#2ec4ff", "#4cd964", "#ffffff"};
+    private static final String[] BAR_PRESETS = {"#3a2a08", "#000000", "#1b2a3d", "#4d8fcc", "#5a5a5a", "#ffffff"};
+    private static final String BAR_DEFAULT = "#3a2a08";
+    private static final String[] DISC_PRESETS = {"#060200", "#000000", "#1b2a3d", "#4d8fcc", "#5a5a5a", "#ffffff"};
+    private static final String DISC_DEFAULT = "#060200";
 
     private final Stage stage = new Stage(StageStyle.UNDECORATED);
     private boolean hideOnClose = false;
+
+    /** Cada texto traducible se registra aquí para poder cambiarlo al instante al elegir otro idioma. */
+    private final List<Runnable> i18n = new ArrayList<>();
+
+    private final ToggleGroup langGroup = new ToggleGroup();
+    private final Map<I18n.Lang, ToggleButton> langButtons = new EnumMap<>(I18n.Lang.class);
 
     private final TextField badge = new TextField();
     private final TextField tag = new TextField();
@@ -48,18 +63,32 @@ public class SettingsWindow {
     private final TextField hex = new TextField();
     private final Region preview = new Region();
     private final HBox swatches = new HBox(6);
+    private final TextField barHex = new TextField();
+    private final Region barPreview = new Region();
+    private final HBox barSwatches = new HBox(6);
+    private final ToggleGroup barGroup = new ToggleGroup();
+    private final Map<String, ToggleButton> barButtons = new HashMap<>();
+    private final TextField discHex = new TextField();
+    private final Region discPreview = new Region();
+    private final HBox discSwatches = new HBox(6);
+    private final ToggleGroup discGroup = new ToggleGroup();
+    private final Map<String, ToggleButton> discButtons = new HashMap<>();
+    private final Slider discOpacity = new Slider(0.1, 1.0, 1.0);
+    private final Label discOpacityLbl = new Label();
+    private final Slider barOpacity = new Slider(0.1, 1.0, 1.0);
+    private final Label barOpacityLbl = new Label();
     private final Slider hold = new Slider(1, 15, 4);
     private final Label holdLbl = new Label();
     private final Slider scale = new Slider(0.6, 2.0, 1.0);
     private final Label scaleLbl = new Label();
     private final ToggleGroup cornerGroup = new ToggleGroup();
     private final Map<TraxSettings.Corner, ToggleButton> cornerButtons = new EnumMap<>(TraxSettings.Corner.class);
-    private final CheckBox italicBadge = new CheckBox("Cursiva en el círculo");
-    private final CheckBox italicBar = new CheckBox("Cursiva en la barra");
-    private final CheckBox enabled = new CheckBox("Mostrar notificaciones");
-    private final CheckBox startup = new CheckBox("Iniciar con Windows");
-    private final Label startupHint = new Label("(solo funciona desde el .exe)");
-    private final CheckBox soundOn = new CheckBox("Sonidos de la interfaz");
+    private final CheckBox italicBadge = new CheckBox();
+    private final CheckBox italicBar = new CheckBox();
+    private final CheckBox enabled = new CheckBox();
+    private final CheckBox startup = new CheckBox();
+    private final Label startupHint = new Label();
+    private final CheckBox soundOn = new CheckBox();
     private final Slider volume = new Slider(0, 1, 0.6);
     private final Label volumeLbl = new Label();
     private final Label status = new Label();
@@ -77,39 +106,70 @@ public class SettingsWindow {
         scale.valueProperty().addListener((o, a, n) -> scaleLbl.setText(String.format("%.0f%%", n.doubleValue() * 100)));
         volume.valueProperty().addListener((o, a, n) -> volumeLbl.setText(String.format("%.0f%%", n.doubleValue() * 100)));
         volumeLbl.getStyleClass().add("mw-value");
+        barOpacity.valueProperty().addListener((o, a, n) -> barOpacityLbl.setText(String.format("%.0f%%", n.doubleValue() * 100)));
+        barOpacityLbl.getStyleClass().add("mw-value");
+        discOpacity.valueProperty().addListener((o, a, n) -> discOpacityLbl.setText(String.format("%.0f%%", n.doubleValue() * 100)));
+        discOpacityLbl.getStyleClass().add("mw-value");
         holdLbl.getStyleClass().add("mw-value");
         scaleLbl.getStyleClass().add("mw-value");
         fontFileLbl.getStyleClass().add("mw-hint");
         logoLbl.getStyleClass().add("mw-hint");
-        hex.setPrefColumnCount(7);
         hex.textProperty().addListener((o, a, n) -> refreshColor());
+        barHex.textProperty().addListener((o, a, n) -> refreshBarColor());
+        discHex.textProperty().addListener((o, a, n) -> refreshDiscColor());
+
+        // ── Textos traducibles de casillas ──
+        tr(italicBadge, "chk.italicbadge");
+        tr(italicBar, "chk.italicbar");
+        tr(enabled, "chk.enabled");
+        tr(startup, "chk.startup");
+        tr(startupHint, "hint.startup");
+        tr(soundOn, "chk.sound");
 
         // ── Archivos ──
-        Button pickLogo = mini("Elegir imagen…", () -> {
-            File f = choose("Elegir logo", "Imágenes", "*.png", "*.jpg", "*.jpeg");
+        Button pickLogo = mini("btn.pickimage", () -> {
+            File f = choose("dlg.chooselogo", "dlg.images", "*.png", "*.jpg", "*.jpeg");
             if (f != null) { logoImage = f.getAbsolutePath(); refreshFiles(); }
         });
-        Button clearLogo = mini("Quitar", () -> { logoImage = ""; refreshFiles(); });
-        Button pickFont = mini("Cargar .ttf…", () -> {
-            File f = choose("Elegir fuente", "Fuentes", "*.ttf", "*.otf");
+        Button clearLogo = mini("btn.remove", () -> { logoImage = ""; refreshFiles(); });
+        Button pickFont = mini("btn.loadfont", () -> {
+            File f = choose("dlg.choosefont", "dlg.fonts", "*.ttf", "*.otf");
             if (f != null) { fontFile = f.getAbsolutePath(); refreshFiles(); }
         });
-        Button clearFont = mini("Quitar", () -> { fontFile = ""; refreshFiles(); });
+        Button clearFont = mini("btn.remove", () -> { fontFile = ""; refreshFiles(); });
 
-        // ── Color: muestras rápidas + hex ──
-        preview.setMinSize(26, 26);
-        preview.setPrefSize(26, 26);
-        for (String c : PRESETS) {
-            Region sw = new Region();
-            sw.setMinSize(20, 20);
-            sw.setPrefSize(20, 20);
-            sw.getStyleClass().add("mw-swatch");
-            sw.setStyle("-fx-background-color: " + c + ";");
-            sw.setOnMouseClicked(e -> hex.setText(c));
-            swatches.getChildren().add(sw);
+        // ── Colores: muestras rápidas + hex (acento y fondo de la barra) ──
+        HBox colorRow = colorRow(hex, preview, swatches, PRESETS);
+        HBox barColorRow = colorRow(barHex, barPreview, barSwatches, BAR_PRESETS);
+        HBox discColorRow = colorRow(discHex, discPreview, discSwatches, DISC_PRESETS);
+
+        // ── Idioma ──
+        HBox langRow = new HBox(6);
+        for (I18n.Lang l : I18n.Lang.values()) {
+            ToggleButton b = new ToggleButton(l.label);
+            b.getStyleClass().add("mw-corner");
+            b.setToggleGroup(langGroup);
+            b.setUserData(l);
+            b.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(b, Priority.ALWAYS);
+            SoundManager.attach(b);
+            langButtons.put(l, b);
+            langRow.getChildren().add(b);
         }
-        HBox colorRow = new HBox(10, preview, hex, swatches);
-        colorRow.setAlignment(Pos.CENTER_LEFT);
+        langGroup.selectedToggleProperty().addListener((o, old, now) -> {
+            if (now == null) { if (old != null) old.setSelected(true); return; }
+            I18n.Lang l = (I18n.Lang) now.getUserData();
+            if (l != I18n.lang()) {
+                I18n.setLang(l);
+                SettingsStore.get().language = l.code;
+                SettingsStore.save();          // el idioma se recuerda sin tener que pulsar GUARDAR
+                refreshTexts();
+            }
+        });
+
+        // ── Estilo del fondo (barra y círculo): Clásico / Aero ──
+        HBox barStyleRow = styleRow(barGroup, barButtons);
+        HBox discStyleRow = styleRow(discGroup, discButtons);
 
         // ── Posición: 2x2 ──
         GridPane corners = new GridPane();
@@ -117,7 +177,7 @@ public class SettingsWindow {
         corners.setVgap(6);
         int i = 0;
         for (TraxSettings.Corner c : TraxSettings.Corner.values()) {
-            ToggleButton b = new ToggleButton(c.toString());
+            ToggleButton b = tr(new ToggleButton(), "corner." + c.name());
             b.getStyleClass().add("mw-corner");
             b.setToggleGroup(cornerGroup);
             b.setUserData(c);
@@ -142,30 +202,37 @@ public class SettingsWindow {
         form.getColumnConstraints().addAll(c0, c1);
 
         int r = 0;
-        r = row(form, r, "Texto del círculo", badge);
-        r = row(form, r, "Texto lateral", tag);
-        r = row(form, r, "Logo propio", new VBox(4, new HBox(6, pickLogo, clearLogo), logoLbl));
-        r = row(form, r, "Fuente", font);
-        r = row(form, r, "Fuente propia", new VBox(4, new HBox(6, pickFont, clearFont), fontFileLbl));
-        r = row(form, r, "Color", colorRow);
-        r = row(form, r, "Segundos abierta", sliderRow(hold, holdLbl));
-        r = row(form, r, "Tamaño", sliderRow(scale, scaleLbl));
-        r = row(form, r, "Posición", corners);
-        r = row(form, r, "Estilo", new VBox(8, italicBadge, italicBar));
-        r = row(form, r, "", enabled);
+        r = row(form, r, "lbl.language", langRow);
+        r = row(form, r, "lbl.badge", badge);
+        r = row(form, r, "lbl.tag", tag);
+        r = row(form, r, "lbl.logo", new VBox(4, new HBox(6, pickLogo, clearLogo), logoLbl));
+        r = row(form, r, "lbl.font", font);
+        r = row(form, r, "lbl.fontfile", new VBox(4, new HBox(6, pickFont, clearFont), fontFileLbl));
+        r = row(form, r, "lbl.color", colorRow);
+        r = row(form, r, "lbl.barstyle", barStyleRow);
+        r = row(form, r, "lbl.barcolor", barColorRow);
+        r = row(form, r, "lbl.baropacity", sliderRow(barOpacity, barOpacityLbl));
+        r = row(form, r, "lbl.discstyle", discStyleRow);
+        r = row(form, r, "lbl.disccolor", discColorRow);
+        r = row(form, r, "lbl.discopacity", sliderRow(discOpacity, discOpacityLbl));
+        r = row(form, r, "lbl.hold", sliderRow(hold, holdLbl));
+        r = row(form, r, "lbl.scale", sliderRow(scale, scaleLbl));
+        r = row(form, r, "lbl.position", corners);
+        r = row(form, r, "lbl.style", new VBox(8, italicBadge, italicBar));
+        r = row(form, r, null, enabled);
         if (StartupManager.isWindows()) {
             startupHint.getStyleClass().add("mw-hint");
             boolean ok = StartupManager.isSupported();
             startup.setDisable(!ok);
             startupHint.setVisible(!ok);
             startupHint.setManaged(!ok);
-            r = row(form, r, "", new VBox(4, startup, startupHint));
+            r = row(form, r, null, new VBox(4, startup, startupHint));
         }
-        Label soundHint = new Label("Coloca tus WAV (click, hover, slider, select, open, close) en esta carpeta");
+        Label soundHint = tr(new Label(), "hint.sounds");
         soundHint.getStyleClass().add("mw-hint");
         soundHint.setWrapText(true);
-        Button openSounds = mini("Abrir carpeta de sonidos", SoundManager::openFolder);
-        r = row(form, r, "Sonido", new VBox(8, soundOn, sliderRow(volume, volumeLbl), openSounds, soundHint));
+        Button openSounds = mini("btn.opensounds", SoundManager::openFolder);
+        r = row(form, r, "lbl.sound", new VBox(8, soundOn, sliderRow(volume, volumeLbl), openSounds, soundHint));
 
         // ── Sonidos ──
         soundOn.selectedProperty().addListener((o, a, n) -> SettingsStore.get().soundEnabled = n);
@@ -178,13 +245,11 @@ public class SettingsWindow {
         SoundManager.attach(hold);
         SoundManager.attach(scale);
         SoundManager.attach(volume);
+        SoundManager.attach(barOpacity);
+        SoundManager.attach(discOpacity);
         font.setOnShowing(e -> SoundManager.play(SoundManager.Sfx.CLICK));
         font.valueProperty().addListener((o, a, v) -> { if (stage.isShowing()) SoundManager.play(SoundManager.Sfx.SELECT); });
         for (ToggleButton tb : cornerButtons.values()) SoundManager.attach(tb);
-        for (Node sw : swatches.getChildren()) {
-            SoundManager.attach(sw);
-            sw.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> SoundManager.play(SoundManager.Sfx.SELECT));
-        }
 
         ScrollPane scroll = new ScrollPane(form);
         scroll.getStyleClass().add("mw-scroll");
@@ -194,20 +259,20 @@ public class SettingsWindow {
         VBox.setVgrow(scroll, Priority.ALWAYS);
 
         // ── Pie con los botones principales ──
-        Node test = bracketButton("PROBAR", () -> {
+        Node test = bracketButton("btn.test", () -> {
             apply();
-            TraxNotification.show(new Song("Nombre canción", "Artista", "Álbum"));
+            TraxNotification.show(new Song(I18n.t("test.title"), I18n.t("test.artist"), I18n.t("test.album")));
         });
-        Node save = bracketButton("GUARDAR", () -> {
+        Node save = bracketButton("btn.save", () -> {
             apply();
             SettingsStore.save();
             if (StartupManager.isSupported() && !StartupManager.setEnabled(startup.isSelected())) {
-                status.setText("Guardado, pero no se pudo cambiar el inicio con Windows");
+                status.setText(I18n.t("status.savedNoStartup"));
                 return;
             }
-            status.setText("Guardado");
+            status.setText(I18n.t("status.saved"));
         });
-        Node quit = bracketButton("SALIR", () -> {
+        Node quit = bracketButton("btn.quit", () -> {
             SoundManager.play(SoundManager.Sfx.CLOSE);
             PauseTransition wait = new PauseTransition(Duration.millis(450)); // deja sonar antes de cerrar
             wait.setOnFinished(e -> onQuit.run());
@@ -237,7 +302,7 @@ public class SettingsWindow {
         var css = SettingsWindow.class.getResource("/cl/feliminish/ui/settings.css");
         if (css != null) scene.getStylesheets().add(css.toExternalForm());
         stage.setScene(scene);
-        stage.setTitle("Retro Trax: ajustes");
+        stage.setTitle(I18n.t("window.title"));
         stage.setResizable(false);
 
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -272,7 +337,7 @@ public class SettingsWindow {
         StackPane warn = new StackPane(tri, bang);
         warn.setPadding(new Insets(0, 0, 4, 0));
 
-        Label title = new Label("retro/ajustes");
+        Label title = tr(new Label(), "title");
         title.getStyleClass().add("mw-title");
 
         Polygon arrow = new Polygon(0, 0, 8, 5, 0, 10);
@@ -320,8 +385,8 @@ public class SettingsWindow {
     }
 
     /** Botón grande gris con texto dorado y corchetes en las esquinas, como el "OK" del juego. */
-    private static Node bracketButton(String text, Runnable action) {
-        Button b = new Button(text);
+    private Node bracketButton(String key, Runnable action) {
+        Button b = tr(new Button(), key);
         b.getStyleClass().add("mw-ok");
         b.setOnAction(e -> action.run());
         SoundManager.attach(b);
@@ -355,8 +420,8 @@ public class SettingsWindow {
         return g;
     }
 
-    private static Button mini(String text, Runnable action) {
-        Button b = new Button(text);
+    private Button mini(String key, Runnable action) {
+        Button b = tr(new Button(), key);
         b.getStyleClass().add("mw-mini");
         b.setOnAction(e -> action.run());
         SoundManager.attach(b);
@@ -372,14 +437,71 @@ public class SettingsWindow {
         return h;
     }
 
-    private static int row(GridPane g, int r, String label, Node control) {
-        Label l = new Label(label);
+    private int row(GridPane g, int r, String key, Node control) {
+        Label l = key == null ? new Label("") : tr(new Label(), key);
         l.getStyleClass().add("mw-label");
         l.setWrapText(true);
         GridPane.setValignment(l, javafx.geometry.VPos.TOP);
         g.add(l, 0, r);
         g.add(control, 1, r);
         return r + 1;
+    }
+
+    /** Pone el texto de la clave en el idioma actual y lo registra para que cambie al elegir otro idioma. */
+    private <T extends Labeled> T tr(T node, String key) {
+        node.setText(I18n.t(key));
+        i18n.add(() -> node.setText(I18n.t(key)));
+        return node;
+    }
+
+    /** Vuelve a poner todos los textos (al cambiar de idioma). */
+    private void refreshTexts() {
+        for (Runnable r : i18n) r.run();
+        stage.setTitle(I18n.t("window.title"));
+        refreshFiles();
+        status.setText("");
+        TrayIconManager.refreshLabels();
+    }
+
+    /** Dos botones, Clásico y Aero, que dejan elegir el estilo de fondo (siempre hay uno elegido). */
+    private HBox styleRow(ToggleGroup group, Map<String, ToggleButton> map) {
+        HBox row = new HBox(6);
+        for (String[] st : new String[][]{{"CLASSIC", "bar.classic"}, {"AERO", "bar.aero"}}) {
+            ToggleButton b = tr(new ToggleButton(), st[1]);
+            b.getStyleClass().add("mw-corner");
+            b.setToggleGroup(group);
+            b.setUserData(st[0]);
+            b.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(b, Priority.ALWAYS);
+            SoundManager.attach(b);
+            map.put(st[0], b);
+            row.getChildren().add(b);
+        }
+        group.selectedToggleProperty().addListener((o, old, now) -> {
+            if (now == null && old != null) old.setSelected(true);
+        });
+        return row;
+    }
+
+    /** Vista previa + campo hex + muestras rápidas de un color. */
+    private HBox colorRow(TextField hexField, Region previewBox, HBox swatchBox, String[] presets) {
+        previewBox.setMinSize(26, 26);
+        previewBox.setPrefSize(26, 26);
+        hexField.setPrefColumnCount(7);
+        for (String c : presets) {
+            Region sw = new Region();
+            sw.setMinSize(20, 20);
+            sw.setPrefSize(20, 20);
+            sw.getStyleClass().add("mw-swatch");
+            sw.setStyle("-fx-background-color: " + c + ";");
+            sw.setOnMouseClicked(e -> hexField.setText(c));
+            SoundManager.attach(sw);
+            sw.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> SoundManager.play(SoundManager.Sfx.SELECT));
+            swatchBox.getChildren().add(sw);
+        }
+        HBox row = new HBox(10, previewBox, hexField, swatchBox);
+        row.setAlignment(Pos.CENTER_LEFT);
+        return row;
     }
 
     // ───────────────────────── datos ─────────────────────────
@@ -390,6 +512,18 @@ public class SettingsWindow {
         tag.setText(s.tagText);
         font.setValue(s.fontFamily);
         hex.setText(UiUtil.toHex(UiUtil.color(s.accentColor)));
+        barHex.setText(UiUtil.toHex(UiUtil.colorOr(s.barColor, BAR_DEFAULT)));
+        barOpacity.setValue(s.barOpacity);
+        barOpacityLbl.setText(String.format("%.0f%%", barOpacity.getValue() * 100));
+        ToggleButton bs = barButtons.get("AERO".equalsIgnoreCase(s.barStyle) ? "AERO" : "CLASSIC");
+        if (bs != null) bs.setSelected(true);
+        discHex.setText(UiUtil.toHex(UiUtil.colorOr(s.discColor, DISC_DEFAULT)));
+        discOpacity.setValue(s.discOpacity);
+        discOpacityLbl.setText(String.format("%.0f%%", discOpacity.getValue() * 100));
+        ToggleButton ds = discButtons.get("AERO".equalsIgnoreCase(s.discStyle) ? "AERO" : "CLASSIC");
+        if (ds != null) ds.setSelected(true);
+        ToggleButton lb = langButtons.get(I18n.lang());
+        if (lb != null) lb.setSelected(true);
         hold.setValue(s.holdSeconds);
         holdLbl.setText(String.format("%.1f s", hold.getValue()));
         scale.setValue(s.scale);
@@ -407,6 +541,8 @@ public class SettingsWindow {
         logoImage = s.logoImage == null ? "" : s.logoImage;
         refreshFiles();
         refreshColor();
+        refreshBarColor();
+        refreshDiscColor();
     }
 
     /** Pasa lo que hay en pantalla al objeto de configuración (todavía sin guardar en disco). */
@@ -418,6 +554,12 @@ public class SettingsWindow {
         s.fontFile = fontFile;
         s.logoImage = logoImage;
         s.accentColor = UiUtil.toHex(UiUtil.color(hex.getText().trim()));
+        s.barColor = UiUtil.toHex(UiUtil.colorOr(barHex.getText().trim(), BAR_DEFAULT));
+        s.barOpacity = Math.round(barOpacity.getValue() * 20) / 20.0;
+        if (barGroup.getSelectedToggle() != null) s.barStyle = (String) barGroup.getSelectedToggle().getUserData();
+        s.discColor = UiUtil.toHex(UiUtil.colorOr(discHex.getText().trim(), DISC_DEFAULT));
+        s.discOpacity = Math.round(discOpacity.getValue() * 20) / 20.0;
+        if (discGroup.getSelectedToggle() != null) s.discStyle = (String) discGroup.getSelectedToggle().getUserData();
         s.holdSeconds = Math.round(hold.getValue() * 10) / 10.0;
         s.scale = Math.round(scale.getValue() * 20) / 20.0;
         if (cornerGroup.getSelectedToggle() != null) {
@@ -431,8 +573,8 @@ public class SettingsWindow {
     }
 
     private void refreshFiles() {
-        fontFileLbl.setText(fontFile.isEmpty() ? "(ninguna)" : new File(fontFile).getName());
-        logoLbl.setText(logoImage.isEmpty() ? "(usa el texto del círculo)" : new File(logoImage).getName());
+        fontFileLbl.setText(fontFile.isEmpty() ? I18n.t("hint.none") : new File(fontFile).getName());
+        logoLbl.setText(logoImage.isEmpty() ? I18n.t("hint.usetext") : new File(logoImage).getName());
     }
 
     private void refreshColor() {
@@ -441,15 +583,27 @@ public class SettingsWindow {
         preview.setStyle("-fx-background-color: " + shown + "; -fx-border-color: white; -fx-border-width: 1.5;");
     }
 
+    private void refreshBarColor() {
+        String text = barHex.getText() == null ? "" : barHex.getText().trim();
+        String shown = UiUtil.toHex(UiUtil.colorOr(text.isEmpty() ? BAR_DEFAULT : text, BAR_DEFAULT));
+        barPreview.setStyle("-fx-background-color: " + shown + "; -fx-border-color: white; -fx-border-width: 1.5;");
+    }
+
+    private void refreshDiscColor() {
+        String text = discHex.getText() == null ? "" : discHex.getText().trim();
+        String shown = UiUtil.toHex(UiUtil.colorOr(text.isEmpty() ? DISC_DEFAULT : text, DISC_DEFAULT));
+        discPreview.setStyle("-fx-background-color: " + shown + "; -fx-border-color: white; -fx-border-width: 1.5;");
+    }
+
     private void closeWindow() {
         SoundManager.play(SoundManager.Sfx.CLOSE);
         if (hideOnClose) stage.hide(); else stage.setIconified(true);
     }
 
-    private File choose(String title, String desc, String... exts) {
+    private File choose(String titleKey, String descKey, String... exts) {
         FileChooser fc = new FileChooser();
-        fc.setTitle(title);
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(desc, exts));
+        fc.setTitle(I18n.t(titleKey));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(I18n.t(descKey), exts));
         return fc.showOpenDialog(stage);
     }
 }

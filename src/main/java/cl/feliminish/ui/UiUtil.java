@@ -52,6 +52,11 @@ final class UiUtil {
         try { return Color.web(hex); } catch (Exception e) { return Color.web("#c4943c"); }
     }
 
+    /** Como color(), pero con un color de respaldo propio (para el fondo de la barra). */
+    static Color colorOr(String hex, String fallback) {
+        try { return Color.web(hex); } catch (Exception e) { return Color.web(fallback); }
+    }
+
     static String toHex(Color c) {
         return String.format("#%02x%02x%02x",
                 Math.round(c.getRed() * 255), Math.round(c.getGreen() * 255), Math.round(c.getBlue() * 255));

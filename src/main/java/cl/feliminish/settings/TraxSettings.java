@@ -23,6 +23,13 @@ public class TraxSettings {
     public double holdSeconds = 4.2;         // cuánto se queda abierta la barra
     public double scale = 1.0;
     public Corner corner = Corner.TOP_LEFT;
+    public String language = "es";           // es, en o pt
+    public String barStyle = "CLASSIC";      // CLASSIC (degradado del original) o AERO (cristal estilo Windows 7)
+    public String barColor = "#3a2a08";      // color del fondo de la barra (el café del original)
+    public double barOpacity = 1.0;          // 0.1 (casi transparente) a 1.0 (opaco)
+    public String discStyle = "CLASSIC";     // CLASSIC (rayas del original) o AERO (cristal) para el interior del círculo
+    public String discColor = "#060200";     // color del interior del círculo (el negro cálido del original)
+    public double discOpacity = 1.0;         // 0.1 a 1.0
     public boolean enabled = true;
     public boolean soundEnabled = true;      // sonidos de la ventana de ajustes
     public double soundVolume = 0.7;         // 0.0 a 1.0

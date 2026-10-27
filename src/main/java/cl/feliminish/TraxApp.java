@@ -1,5 +1,6 @@
 package cl.feliminish;
 
+import cl.feliminish.i18n.I18n;
 import cl.feliminish.service.NowPlayingService;
 import cl.feliminish.service.SingleInstance;
 import cl.feliminish.service.StartupManager;
@@ -34,6 +35,7 @@ public class TraxApp extends Application {
         owner.show();
 
         SettingsStore.load();
+        I18n.setLang(I18n.Lang.fromCode(SettingsStore.get().language));
 
         SettingsWindow settings = new SettingsWindow(this::quit);
         // Si el usuario abre el programa otra vez, esta instancia muestra sus ajustes en vez de abrirse una segunda

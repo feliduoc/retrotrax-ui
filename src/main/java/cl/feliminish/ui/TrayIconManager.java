@@ -1,5 +1,6 @@
 package cl.feliminish.ui;
 
+import cl.feliminish.i18n.I18n;
 import javafx.application.Platform;
 
 import java.awt.AWTException;
@@ -11,10 +12,12 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
 
-/** Icono en la bandeja de Windows (junto al reloj). En macOS no se usa: AWT y JavaFX se llevan mal ahí XDD. */
+/** Icono en la bandeja de Windows (junto al reloj). En macOS no se usa: AWT y JavaFX se llevan mal ahí. */
 public final class TrayIconManager {
 
     private static TrayIcon icon;
+    private static MenuItem settingsItem;
+    private static MenuItem exitItem;
 
     private TrayIconManager() {}
 
@@ -33,9 +36,11 @@ public final class TrayIconManager {
             g.dispose();
 
             PopupMenu menu = new PopupMenu();
-            MenuItem settings = new MenuItem("Ajustes");
+            MenuItem settings = new MenuItem(I18n.t("tray.settings"));
+            settingsItem = settings;
             settings.addActionListener(e -> Platform.runLater(openSettings));
-            MenuItem exit = new MenuItem("Salir");
+            MenuItem exit = new MenuItem(I18n.t("tray.exit"));
+            exitItem = exit;
             exit.addActionListener(e -> Platform.runLater(quit));
             menu.add(settings);
             menu.addSeparator();
@@ -49,6 +54,12 @@ public final class TrayIconManager {
             System.err.println("No se pudo crear el icono de bandeja: " + e.getMessage());
             return false;
         }
+    }
+
+    /** Vuelve a poner los textos del menú de la bandeja (al cambiar de idioma). */
+    public static void refreshLabels() {
+        if (settingsItem != null) settingsItem.setLabel(I18n.t("tray.settings"));
+        if (exitItem != null) exitItem.setLabel(I18n.t("tray.exit"));
     }
 
     public static void remove() {

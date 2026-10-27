@@ -1,11 +1,12 @@
 /* Colores medidos de una grabación del original. -trax-accent (el dorado) lo define Java con el color elegido. */
 .trax-overlay { -fx-background-color: transparent; }
 
-/* Marco dorado de la barra (el recorte redondea el extremo derecho) */
+/* Marco dorado de la barra: solo los bordes de arriba y abajo (el interior queda libre para un fondo translúcido).
+   El extremo derecho lo redondea el recorte de la barra y lo cubre la etiqueta lateral. */
 .trax-bar {
-    -fx-background-color: linear-gradient(to bottom,
-        derive(-trax-accent, 14%) 0%, -trax-accent 45%, derive(-trax-accent, -10%) 100%);
-    -fx-background-radius: 0; /* las esquinas redondas las da el recorte (solo a la derecha) */
+    -fx-background-color: transparent;
+    -fx-border-color: -trax-accent;
+    -fx-border-width: 4 0 4 0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.65), 9, 0.15, 0, 3);
 }
 
@@ -15,15 +16,19 @@
         #000000 0%, #040203 45%, #151004 62%, #2c1e0c 82%, #3a2a08 100%);
 }
 
-/* Disco: aro con brillo arriba, línea oscura interior y rayas "/" muy sutiles */
+/* Disco (72 px): el aro dorado con brillo arriba y la línea oscura interior son BORDES, así el interior
+   (rayas o cristal, color y opacidad) lo pone Java en línea y puede ser translúcido. Radios = mitad del tamaño. */
 .trax-logo {
-    -fx-background-color:
+    -fx-background-color: linear-gradient(from 0px 0px to 6px 6px, repeat,
+        #060200 0%, #060200 50%, #1d140b 50%, #1d140b 100%);
+    -fx-background-insets: 5;
+    -fx-background-radius: 31;
+    -fx-border-color:
         linear-gradient(to bottom, derive(-trax-accent, 62%) 0%, -trax-accent 38%, derive(-trax-accent, -16%) 100%),
-        #2a0d00,
-        linear-gradient(from 0px 0px to 6px 6px, repeat,
-            #060200 0%, #060200 50%, #1d140b 50%, #1d140b 100%);
-    -fx-background-insets: 0, 4, 5;
-    -fx-background-radius: 100, 100, 100;
+        #2a0d00;
+    -fx-border-width: 4, 1;
+    -fx-border-insets: 0, 4;
+    -fx-border-radius: 36, 32;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 8, 0.25, 0, 2);
 }
 
@@ -43,11 +48,9 @@
 .trax-title { -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 14px; }
 .trax-sub   { -fx-text-fill: #c3bfa4; -fx-font-weight: bold; -fx-font-size: 12px; }
 
-/* Etiqueta lateral: dorado plano con el texto negro girado */
+/* Etiqueta lateral: dorado plano, pegada al fondo de la barra sin ninguna línea de separación */
 .trax-side {
     -fx-background-color: -trax-accent;
-    -fx-border-color: transparent transparent transparent rgba(8,3,2,0.9);
-    -fx-border-width: 0 0 0 1.5;
 }
 .trax-tag { -fx-text-fill: #050000; -fx-font-weight: bold; }
 
