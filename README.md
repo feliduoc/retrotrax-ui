@@ -30,8 +30,8 @@ Hecho con JavaFX.
 
 - Menu de ajustes
   
-<img width="771" height="767" alt="image" src="https://github.com/user-attachments/assets/b6beadce-e892-4a79-b760-f83d9da88c34" />
-<img width="773" height="390" alt="image" src="https://github.com/user-attachments/assets/fe516f5c-05ac-4793-a2dd-a0a5ac0d960a" />
+![img.png](img.png)
+![img_1.png](img_1.png)
 
 
 > El texto es personalizable, se uso el nombre de EA es con fines demostrativos
